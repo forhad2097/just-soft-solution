@@ -1,17 +1,23 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/utils";
-import { services } from "@/data/services";
-import { products } from "@/data/products";
+import { getAllServices, getAllProducts, getAllPosts } from "@/lib/store";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const base = SITE.url;
+
+  const [services, products, posts] = await Promise.all([
+    getAllServices(),
+    getAllProducts(),
+    getAllPosts(),
+  ]);
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
     { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/services`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/products`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
@@ -33,5 +39,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
-  return [...staticPages, ...serviceEntries, ...productEntries];
+  const postEntries: MetadataRoute.Sitemap = posts
+    .filter((p) => p.status === "published")
+    .map((p) => ({
+      url: `${base}/blog/${p.slug}`,
+      lastModified: new Date(p.publishedAt),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
+
+  return [...staticPages, ...serviceEntries, ...productEntries, ...postEntries];
 }

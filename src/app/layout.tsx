@@ -68,13 +68,6 @@ export const metadata: Metadata = {
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
   },
-  icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/icons/icon-192.svg", type: "image/svg+xml" },
-    ],
-    apple: "/icons/icon-192.svg",
-  },
   robots: { index: true, follow: true },
 };
 
@@ -109,15 +102,39 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               name: SITE.name,
+              alternateName: SITE.shortName,
               url: SITE.url,
+              logo: `${SITE.url}/icon`,
               description: SITE.description,
-              sameAs: [],
+              sameAs: SITE.social.map((s) => s.href),
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: SITE.whatsappDisplay,
+                contactType: "sales",
+                email: SITE.email,
+                areaServed: ["BD", "AE", "US"],
+                availableLanguage: ["en", "bn"],
+              },
               address: SITE.offices.map((o) => ({
                 "@type": "PostalAddress",
                 addressCountry: o.country,
                 streetAddress: o.address,
                 telephone: o.phone,
               })),
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: SITE.name,
+              url: SITE.url,
+              description: SITE.description,
+              inLanguage: "en",
+              publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
             }),
           }}
         />

@@ -11,7 +11,7 @@ export const SITE = {
   tagline: "We Turn Any Business Into Business Automation",
   description:
     "Just Soft Solution — custom software development, world-class manual & automation testing, API & security testing, and big data analysis. Operating across Bangladesh, UAE & USA.",
-  url: "https://justsoftsolution.com",
+  url: "https://jss.aiosolibe.cloud",
   whatsappNumber: "8801842022052",
   whatsappDisplay: "+880 1842-022052",
   email: "info@justsoftsolution.com",
@@ -42,10 +42,9 @@ export const SITE = {
     },
   ],
   social: [
-    { name: "LinkedIn", href: "#", icon: "linkedin" },
-    { name: "Facebook", href: "#", icon: "facebook" },
-    { name: "GitHub", href: "#", icon: "github" },
-    { name: "YouTube", href: "#", icon: "youtube" },
+    { name: "LinkedIn", href: "https://linkedin.com/company/just-soft-solution", icon: "linkedin" },
+    { name: "Facebook", href: "https://www.facebook.com/share/1Cuo7aUttK/", icon: "facebook" },
+    { name: "YouTube", href: "https://www.youtube.com/@justsoftsolution5899", icon: "youtube" },
   ],
 } as const;
 

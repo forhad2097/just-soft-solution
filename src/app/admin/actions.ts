@@ -14,9 +14,11 @@ import {
   deleteService,
   upsertProduct,
   deleteProduct,
+  upsertPost,
+  deletePost,
   slugify,
 } from "@/lib/store";
-import type { Service, Product } from "@/data/types";
+import type { Service, Product, BlogPost } from "@/data/types";
 
 function isProd() {
   return process.env.NODE_ENV === "production";
@@ -79,6 +81,8 @@ function revalidateSite() {
   revalidatePath("/services/[slug]", "page");
   revalidatePath("/products");
   revalidatePath("/products/[slug]", "page");
+  revalidatePath("/blog");
+  revalidatePath("/blog/[slug]", "page");
 }
 
 export async function saveServiceAction(formData: FormData) {
@@ -175,4 +179,63 @@ export async function deleteProductAction(formData: FormData) {
     revalidateSite();
   }
   redirect(`/admin/products?deleted=${encodeURIComponent(slug)}`);
+}
+
+const COVER_COLORS = [
+  "from-cyan-500 to-blue-600",
+  "from-blue-500 to-violet-600",
+  "from-violet-500 to-pink-600",
+  "from-emerald-500 to-cyan-600",
+  "from-amber-500 to-pink-600",
+];
+
+function estimateReadingMinutes(text: string): number {
+  const words = (text ?? "").trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+
+export async function savePostAction(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) redirect("/admin/blog/new?error=title");
+
+  const slug = String(formData.get("slug") ?? "").trim() || slugify(title);
+  const content = String(formData.get("content") ?? "");
+  const colorChoice = String(formData.get("coverColor") ?? "").trim();
+  const publishedAtRaw = String(formData.get("publishedAt") ?? "").trim();
+  const publishedAt = publishedAtRaw || new Date().toISOString().slice(0, 10);
+
+  const post: BlogPost = {
+    slug,
+    title,
+    excerpt: String(formData.get("excerpt") ?? ""),
+    content,
+    category: String(formData.get("category") ?? "General"),
+    tags: String(formData.get("tags") ?? "")
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+    author: String(formData.get("author") ?? "Just Soft Solution Team"),
+    coverColor:
+      colorChoice && COVER_COLORS.includes(colorChoice)
+        ? colorChoice
+        : COVER_COLORS[0],
+    publishedAt,
+    readingMinutes: estimateReadingMinutes(content),
+    metaTitle: String(formData.get("metaTitle") ?? "") || undefined,
+    metaDescription: String(formData.get("metaDescription") ?? "") || undefined,
+    status: String(formData.get("status") ?? "published") as BlogPost["status"],
+  };
+
+  await upsertPost(post);
+  revalidateSite();
+  redirect(`/admin/blog?saved=${encodeURIComponent(post.slug)}`);
+}
+
+export async function deletePostAction(formData: FormData) {
+  const slug = String(formData.get("slug") ?? "");
+  if (slug) {
+    await deletePost(slug);
+    revalidateSite();
+  }
+  redirect(`/admin/blog?deleted=${encodeURIComponent(slug)}`);
 }

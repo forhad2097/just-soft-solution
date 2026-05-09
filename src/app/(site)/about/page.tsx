@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   Target, Eye, Sparkles, ShieldCheck, Lightbulb, Users, BadgeCheck, Globe2, Rocket,
 } from "lucide-react";
@@ -73,6 +74,28 @@ export default async function AboutPage() {
               ships on time and stays maintainable for years.
             </p>
           </div>
+        </div>
+
+        {/* Vector illustration under Our Story */}
+        <div className="mt-12 md:mt-16 relative overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface)]/40 p-6 md:p-10 backdrop-blur">
+          <div
+            aria-hidden
+            className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,_color-mix(in_oklab,_var(--primary)_30%,_transparent),_transparent)] blur-3xl"
+          />
+          <div className="relative flex justify-center">
+            <Image
+              src="/illustrations/automation-flow.svg"
+              alt="Just Soft Solution automation flow — data sources connect through our automation engine into actionable insights"
+              width={800}
+              height={500}
+              priority={false}
+              className="w-full max-w-3xl h-auto"
+            />
+          </div>
+          <p className="relative mt-6 text-center text-sm md:text-base text-[var(--muted-foreground)] max-w-2xl mx-auto">
+            From APIs and databases to dashboards and decisions — every kind of
+            business artifact plugs into our automation pipeline.
+          </p>
         </div>
       </Section>
 

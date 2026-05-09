@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -7,6 +8,7 @@ import {
   LayoutDashboard,
   Wrench,
   Package,
+  Newspaper,
   Settings,
   LogOut,
   Menu,
@@ -20,6 +22,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/services", label: "Services", icon: Wrench },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
@@ -47,10 +50,15 @@ export function AdminSidebar() {
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className="flex h-16 items-center gap-2 px-5 border-b border-[var(--border)]">
-          <div className="h-9 w-9 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent-2))] grid place-items-center">
-            <span className="text-white font-display font-bold text-lg">J</span>
-          </div>
+        <div className="flex h-16 items-center gap-2.5 px-5 border-b border-[var(--border)]">
+          <Image
+            src="/icons/JSS_Logo.png"
+            alt="Just Soft Solution"
+            width={913}
+            height={616}
+            priority
+            className="h-9 w-auto"
+          />
           <div>
             <div className="font-display text-sm font-bold leading-tight">
               <span className="text-gradient">JSS</span> Admin

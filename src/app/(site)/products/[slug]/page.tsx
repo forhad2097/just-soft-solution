@@ -15,7 +15,7 @@ import { ProductCard } from "@/components/site/product-card";
 import { DynamicIcon } from "@/components/ui/dynamic-icon";
 import { Faq } from "@/components/site/faq";
 import { getAllProducts, getProductBySlug } from "@/lib/store";
-import { whatsappLink } from "@/lib/utils";
+import { SITE, whatsappLink } from "@/lib/utils";
 
 export const revalidate = 60;
 
@@ -58,8 +58,72 @@ export default async function ProductDetailPage({
     .slice(0, 3);
   const recommended = related.length ? related : fallback;
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: product.title,
+    description: product.description,
+    applicationCategory: product.category,
+    operatingSystem: "Web, Windows, Linux, iOS, Android",
+    url: `${SITE.url}/products/${product.slug}`,
+    publisher: {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: `${SITE.url}/products/${product.slug}`,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Products", item: `${SITE.url}/products` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.title,
+        item: `${SITE.url}/products/${product.slug}`,
+      },
+    ],
+  };
+
+  const faqSchema = product.faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: product.faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
+
       <Section className="pt-10 md:pt-16">
         <div className="mb-6 flex items-center gap-1 text-sm text-[var(--muted-foreground)]">
           <Link href="/" className="hover:text-[var(--primary)]">Home</Link>

@@ -14,7 +14,7 @@ import { ServiceCard } from "@/components/site/service-card";
 import { DynamicIcon } from "@/components/ui/dynamic-icon";
 import { Faq } from "@/components/site/faq";
 import { getAllServices, getServiceBySlug } from "@/lib/store";
-import { whatsappLink } from "@/lib/utils";
+import { SITE, whatsappLink } from "@/lib/utils";
 
 export const revalidate = 60;
 
@@ -57,8 +57,65 @@ export default async function ServiceDetailPage({
     .slice(0, 3);
   const recommended = related.length ? related : fallbackRelated;
 
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: service.category,
+    name: service.title,
+    description: service.description,
+    provider: {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+    },
+    areaServed: ["Bangladesh", "United Arab Emirates", "United States"],
+    url: `${SITE.url}/services/${service.slug}`,
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Services", item: `${SITE.url}/services` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: service.title,
+        item: `${SITE.url}/services/${service.slug}`,
+      },
+    ],
+  };
+
+  const faqSchema = service.faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: service.faqs.map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }
+    : null;
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
+
       {/* Hero */}
       <Section className="pt-10 md:pt-16">
         <div className="mb-6 flex items-center gap-1 text-sm text-[var(--muted-foreground)]">

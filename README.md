@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Just Soft Solution
 
-## Getting Started
+Corporate website + admin panel for **Just Soft Solution** — a software company specializing in custom development, software testing (manual + automation), API & security testing, big data analysis, and ERP/POS products. Operating across Bangladesh, the UAE, and the United States.
 
-First, run the development server:
+## Quick links
+
+| For… | Read |
+|---|---|
+| **Anyone receiving the project** | [HANDOVER.md](./HANDOVER.md) — what you're getting, what's next, sign-off |
+| **Day-to-day content editing** | [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) — using the admin panel |
+| **Standing up your own deployment** | [DEPLOYMENT.md](./DEPLOYMENT.md) — Vercel or self-hosted Docker |
+| **Moving the live site to your VPS** | [MIGRATION.md](./MIGRATION.md) — zero-downtime cutover |
+| **Operations / when something breaks** | [RUNBOOK.md](./RUNBOOK.md) — incidents, backups, hardening |
+| **Original delivery team's cleanup** | [POST_HANDOVER_CLEANUP.md](./POST_HANDOVER_CLEANUP.md) — tear-down checklist |
+
+---
+
+## What's in the box
+
+- **Public website** at 5 page types — Home, About, Services (14 services + detail pages), Products (10 products + detail pages), Blog, Contact
+- **Admin panel** at `/admin` — full CRUD for services, products, and blog posts; HMAC-signed cookie auth; markdown blog editor
+- **SEO** — JSON-LD schemas (Organization, Service, SoftwareApplication, BlogPosting, BreadcrumbList, FAQPage), per-page metadata, sitemap, robots, OG image, PWA manifest
+- **Brand** — logo, dark-mode-locked theme, gradient accents, glassmorphism cards
+- **Mobile-first responsive** — 360px to 4K
+- **Docker + nginx + certbot** — production deploy recipe included
+
+---
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| UI | React 19 + Tailwind CSS v4 |
+| Animation | Framer Motion |
+| Auth | HMAC-signed cookie (Node `crypto`, no third party) |
+| Storage | File-based JSON (`data/store.json`) — no DB required |
+| Markdown | `marked` |
+| Container | Node 22 Alpine, multi-stage build |
+
+No database. No serverless functions. No cloud lock-in.
+
+---
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The admin uses default credentials in dev (`admin@justsoftsolution.com` / `admin123`) unless you override via env vars. **Never use these defaults in production.**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Override locally if you want to match production
+echo 'ADMIN_EMAIL=...' >> .env.local
+echo 'ADMIN_PASSWORD=...' >> .env.local
+echo 'ADMIN_SESSION_SECRET=...' >> .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Production deploy
 
-To learn more about Next.js, take a look at the following resources:
+See [DEPLOYMENT.md](./DEPLOYMENT.md). Two paths:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Vercel** — fastest, free tier, but the file-store needs a DB for content edits to persist
+- **Self-hosted Docker** — full file-store works as designed, costs $5–20/mo on a small VPS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Repository layout
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+├── app/                ← Next.js App Router
+│   ├── (site)/         ← public pages
+│   ├── admin/          ← admin panel + auth
+│   ├── icon.tsx        ← favicon (generated)
+│   ├── apple-icon.tsx  ← iOS touch icon
+│   ├── opengraph-image.tsx
+│   ├── sitemap.ts
+│   ├── robots.ts
+│   └── layout.tsx
+├── components/         ← UI components grouped by domain
+│   ├── site/
+│   ├── admin/
+│   └── ui/
+├── data/               ← TypeScript seed data (services, products, posts)
+├── lib/                ← auth, store, markdown, utils
+└── proxy.ts            ← Next 16's rename of middleware (auth gate)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+public/
+├── icons/              ← logo and brand assets
+└── illustrations/      ← about-page SVG
+
+Dockerfile · docker-compose.yml · next.config.ts
+```
+
+---
+
+## Security notes
+
+- All secrets live in `.env` (gitignored, never committed)
+- Admin routes protected by `proxy.ts` middleware
+- Sessions are HMAC-SHA256 signed cookies (httpOnly, secure in prod)
+- Robots.txt disallows `/admin` and `/api`
+- No telemetry — `NEXT_TELEMETRY_DISABLED=1` set in container
+
+For production hardening, see [RUNBOOK.md → Security hardening](./RUNBOOK.md#security-hardening-do-once).
+
+---
+
+## License
+
+Delivered under handover terms — see [HANDOVER.md](./HANDOVER.md). Source code becomes the receiving party's property on signed acceptance. No warranty beyond §10 of HANDOVER.md.

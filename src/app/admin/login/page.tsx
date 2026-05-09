@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { LoginForm } from "@/components/admin/login-form";
 
 export const metadata: Metadata = {
@@ -26,9 +27,14 @@ export default async function LoginPage({
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,var(--primary),var(--accent-2))] shadow-[0_12px_30px_-8px_color-mix(in_oklab,var(--primary)_60%,transparent)]">
-            <span className="text-white font-display font-bold text-xl">J</span>
-          </div>
+          <Image
+            src="/icons/JSS_Logo.png"
+            alt="Just Soft Solution"
+            width={913}
+            height={616}
+            priority
+            className="h-16 w-auto mx-auto drop-shadow-[0_12px_30px_color-mix(in_oklab,var(--primary)_45%,transparent)]"
+          />
           <h1 className="mt-5 font-display text-3xl font-bold tracking-tight">
             <span className="text-gradient">Just Soft Solution</span>
           </h1>

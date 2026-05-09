@@ -10,6 +10,9 @@ import {
   CheckCircle2,
   Star,
   Globe2,
+  Palette,
+  Cable,
+  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Section, SectionHeader } from "@/components/ui/section";
@@ -83,10 +86,15 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Floating tech stack badges */}
+          {/* Floating service / tech badges */}
           <div className="mt-14 md:mt-20 max-w-5xl mx-auto">
-            <div className="relative grid grid-cols-3 sm:grid-cols-6 gap-3">
+            <div className="relative flex flex-wrap items-center justify-center gap-3">
               {[
+                { name: "Python", icon: Code2 },
+                { name: "AI Applications", icon: Brain },
+                { name: "Power BI", icon: BarChart3 },
+                { name: "API Testing", icon: Cable },
+                { name: "UI / UX", icon: Palette },
                 { name: "Next.js", icon: Code2 },
                 { name: "Selenium", icon: Bug },
                 { name: "Cypress", icon: Bug },
@@ -96,8 +104,8 @@ export default async function HomePage() {
               ].map(({ name, icon: Icon }, i) => (
                 <div
                   key={name}
-                  style={{ animationDelay: `${i * 0.4}s` }}
-                  className="glass animate-float-slow flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium"
+                  style={{ animationDelay: `${(i % 6) * 0.4}s` }}
+                  className="glass animate-float-slow inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium whitespace-nowrap"
                 >
                   <Icon className="h-4 w-4 text-[var(--primary)]" />
                   {name}

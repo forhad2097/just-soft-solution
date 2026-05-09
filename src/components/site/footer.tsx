@@ -1,9 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
 import {
   LinkedInIcon,
   FacebookIcon,
-  GitHubIcon,
   YouTubeIcon,
 } from "@/components/ui/brand-icons";
 import { SITE } from "@/lib/utils";
@@ -20,10 +20,14 @@ export async function Footer() {
 
       <div className="container-page py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-1">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent-2))] grid place-items-center">
-              <span className="text-white font-display font-bold text-lg">J</span>
-            </div>
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image
+              src="/icons/JSS_Logo.png"
+              alt="Just Soft Solution"
+              width={913}
+              height={616}
+              className="h-9 w-auto"
+            />
             <div className="font-display text-lg font-bold tracking-tight">
               <span className="text-gradient">Just Soft</span> Solution
             </div>
@@ -34,14 +38,15 @@ export async function Footer() {
           </p>
           <div className="mt-5 flex items-center gap-2">
             {[
-              { icon: LinkedInIcon, label: "LinkedIn" },
-              { icon: FacebookIcon, label: "Facebook" },
-              { icon: GitHubIcon, label: "GitHub" },
-              { icon: YouTubeIcon, label: "YouTube" },
-            ].map(({ icon: Icon, label }) => (
+              { icon: LinkedInIcon, label: "LinkedIn", href: "https://linkedin.com/company/just-soft-solution" },
+              { icon: FacebookIcon, label: "Facebook", href: "https://www.facebook.com/share/1Cuo7aUttK/" },
+              { icon: YouTubeIcon, label: "YouTube", href: "https://www.youtube.com/@justsoftsolution5899" },
+            ].map(({ icon: Icon, label, href }) => (
               <a
                 key={label}
-                href="#"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 className="grid h-9 w-9 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface)]/50 text-[var(--muted-foreground)] transition hover:text-[var(--primary)] hover:border-[var(--primary)]/40"
               >
@@ -61,6 +66,7 @@ export async function Footer() {
               { href: "/about", label: "About Us" },
               { href: "/services", label: "Our Services" },
               { href: "/products", label: "Our Products" },
+              { href: "/blog", label: "Blog" },
               { href: "/contact", label: "Contact Us" },
             ].map((l) => (
               <li key={l.href}>
@@ -128,8 +134,6 @@ export async function Footer() {
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </div>
           <div className="flex items-center gap-5">
-            <a href="#" className="hover:text-[var(--primary)]">Privacy Policy</a>
-            <a href="#" className="hover:text-[var(--primary)]">Terms of Service</a>
             <a
               href={`mailto:${SITE.email}`}
               className="inline-flex items-center gap-1 hover:text-[var(--primary)]"

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ const NAV = [
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/products", label: "Products" },
+  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -52,11 +54,15 @@ export function Header() {
         )}
       >
         <div className="container-page flex h-16 md:h-20 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative h-9 w-9 rounded-xl bg-[linear-gradient(135deg,var(--primary),var(--accent-2))] grid place-items-center overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.4),transparent_60%)]" />
-              <span className="relative text-white font-display font-bold text-lg">J</span>
-            </div>
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <Image
+              src="/icons/JSS_Logo.png"
+              alt="Just Soft Solution"
+              width={913}
+              height={616}
+              priority
+              className="h-9 w-auto md:h-10 transition group-hover:drop-shadow-[0_0_18px_color-mix(in_oklab,var(--primary)_60%,transparent)]"
+            />
             <div className="leading-tight">
               <div className="font-display text-base md:text-lg font-bold tracking-tight">
                 <span className="text-gradient">Just Soft</span>

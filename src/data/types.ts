@@ -15,6 +15,22 @@ export interface Service {
   status: "published" | "draft";
 }
 
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  tags: string[];
+  author: string;
+  coverColor: string;
+  publishedAt: string;
+  readingMinutes: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  status: "published" | "draft";
+}
+
 export interface Product {
   slug: string;
   title: string;

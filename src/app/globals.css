@@ -240,3 +240,106 @@ body {
   outline-offset: 2px;
   border-radius: 0.5rem;
 }
+
+/* Prose styling for rendered markdown (blog post bodies) */
+.prose-jss {
+  color: color-mix(in oklab, var(--foreground) 92%, transparent);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+.prose-jss h2 {
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 3rem 0 1rem;
+  color: var(--foreground);
+}
+.prose-jss h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 2.25rem 0 0.75rem;
+  color: var(--foreground);
+}
+.prose-jss h4 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+  color: var(--foreground);
+}
+.prose-jss p {
+  margin: 1rem 0;
+}
+.prose-jss a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
+  transition: text-decoration-color 0.2s ease;
+}
+.prose-jss a:hover {
+  text-decoration-color: var(--primary);
+}
+.prose-jss strong {
+  color: var(--foreground);
+  font-weight: 700;
+}
+.prose-jss ul,
+.prose-jss ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+.prose-jss li {
+  margin: 0.4rem 0;
+}
+.prose-jss li::marker {
+  color: var(--primary);
+}
+.prose-jss blockquote {
+  border-left: 3px solid var(--primary);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  margin: 1.5rem 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+.prose-jss code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: color-mix(in oklab, var(--surface) 80%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding: 0.15rem 0.4rem;
+  color: var(--primary);
+}
+.prose-jss pre {
+  background: color-mix(in oklab, var(--surface) 80%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.prose-jss pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--foreground);
+}
+.prose-jss hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 2.5rem 0;
+}
+.prose-jss img {
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  margin: 1.5rem 0;
+  max-width: 100%;
+  height: auto;
+}

@@ -3,7 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { services as seedServices } from "@/data/services";
 import { products as seedProducts } from "@/data/products";
-import type { Service, Product } from "@/data/types";
+import { posts as seedPosts } from "@/data/posts";
+import type { Service, Product, BlogPost } from "@/data/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const STORE_FILE = path.join(DATA_DIR, "store.json");
@@ -11,6 +12,7 @@ const STORE_FILE = path.join(DATA_DIR, "store.json");
 interface Store {
   services: Service[];
   products: Product[];
+  posts: BlogPost[];
   updatedAt: string;
 }
 
@@ -20,14 +22,23 @@ async function ensureStore(): Promise<Store> {
   if (cache) return cache;
   try {
     const raw = await fs.readFile(STORE_FILE, "utf8");
-    cache = JSON.parse(raw) as Store;
+    const parsed = JSON.parse(raw) as Partial<Store>;
+    // Migrate stores written before posts existed
+    cache = {
+      services: parsed.services ?? structuredClone(seedServices),
+      products: parsed.products ?? structuredClone(seedProducts),
+      posts: parsed.posts ?? structuredClone(seedPosts),
+      updatedAt: parsed.updatedAt ?? new Date().toISOString(),
+    };
+    if (!parsed.posts) await persist();
     return cache;
   } catch {
     cache = {
       services: structuredClone(seedServices),
       products: structuredClone(seedProducts),
+      posts: structuredClone(seedPosts),
       updatedAt: new Date().toISOString(),
-    } as Store;
+    };
     await persist();
     return cache;
   }
@@ -84,6 +95,30 @@ export async function deleteProduct(slug: string): Promise<void> {
   await persist();
 }
 
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const s = await ensureStore();
+  return [...s.posts].sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+  );
+}
+export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const s = await ensureStore();
+  return s.posts.find((x) => x.slug === slug);
+}
+export async function upsertPost(post: BlogPost): Promise<BlogPost> {
+  const s = await ensureStore();
+  const idx = s.posts.findIndex((x) => x.slug === post.slug);
+  if (idx >= 0) s.posts[idx] = post;
+  else s.posts.unshift(post);
+  await persist();
+  return post;
+}
+export async function deletePost(slug: string): Promise<void> {
+  const s = await ensureStore();
+  s.posts = s.posts.filter((x) => x.slug !== slug);
+  await persist();
+}
+
 export async function getStats() {
   const s = await ensureStore();
   return {
@@ -93,6 +128,9 @@ export async function getStats() {
     totalProducts: s.products.length,
     publishedProducts: s.products.filter((x) => x.status === "published").length,
     draftProducts: s.products.filter((x) => x.status === "draft").length,
+    totalPosts: s.posts.length,
+    publishedPosts: s.posts.filter((x) => x.status === "published").length,
+    draftPosts: s.posts.filter((x) => x.status === "draft").length,
     updatedAt: s.updatedAt,
   };
 }
