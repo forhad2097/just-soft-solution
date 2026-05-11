@@ -7,10 +7,10 @@ import {
   YouTubeIcon,
 } from "@/components/ui/brand-icons";
 import { SITE } from "@/lib/utils";
-import { getAllServices } from "@/lib/store";
+import { safeGetAllServices } from "@/lib/store";
 
 export async function Footer() {
-  const services = await getAllServices();
+  const services = await safeGetAllServices();
   return (
     <footer className="relative mt-24 border-t border-[var(--border)] bg-[var(--surface)]/30 backdrop-blur">
       <div

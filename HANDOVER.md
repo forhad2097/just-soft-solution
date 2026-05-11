@@ -50,13 +50,16 @@ Styling:      Tailwind CSS v4 (CSS-first config in src/app/globals.css)
 Animation:    Framer Motion + custom CSS animations
 Icons:        lucide-react v1 + custom inline SVG (brand icons)
 Auth:         HMAC-signed session cookie (Node crypto, no third-party)
-Data store:   File-based JSON (data/store.json) seeded from src/data/
+Database:     MySQL 8.0+ (5.7 compatible) via Prisma ORM
 Markdown:     marked
-Container:    Node 22 Alpine (multi-stage build)
-Reverse proxy: nginx + Let's Encrypt (in the original setup)
+Container:    Node 22 Alpine (multi-stage build, optional)
+Reverse proxy: nginx / Apache / Passenger (host-dependent)
 ```
 
-No database server is required — content lives in a JSON file mounted as a Docker volume. This means **zero ongoing database administration**.
+**Deployment targets:** the project ships with config for three options:
+- **cPanel + MySQL** — for shared hosting, see [CPANEL_DEPLOYMENT.md](./CPANEL_DEPLOYMENT.md)
+- **VPS + Docker + MySQL** — see [DEPLOYMENT.md → Path B](./DEPLOYMENT.md)
+- **Vercel + PlanetScale/Neon/AWS RDS** — see [DEPLOYMENT.md → Path A](./DEPLOYMENT.md)
 
 ---
 
@@ -116,13 +119,18 @@ Dockerfile · docker-compose.yml · next.config.ts · tsconfig.json
 
 | File | What it is | When to edit |
 |---|---|---|
-| `src/data/services.ts` | Seed catalog of 14 services | If you want to bulk-edit before launch (otherwise use admin) |
+| `src/data/services.ts` | Seed catalog of 14 services | If you want to reset DB to defaults via `npm run db:seed` |
 | `src/data/products.ts` | Seed catalog of 10 products | Same |
 | `src/data/posts.ts` | Seed blog posts | Same |
 | `src/lib/utils.ts` | Site identity constant (offices, phone, email, social) | When contact info changes |
-| `data/store.json` | Live admin-edited content (auto-generated, gitignored) | **Never edit by hand** — use the admin panel |
+| `prisma/schema.prisma` | MySQL database schema | When adding fields to services / products / posts |
 
-After launch, **all routine content updates happen in the admin panel** at `/admin`. You should rarely need to touch the source code.
+After launch, **all routine content updates happen in the admin panel** at `/admin`, which writes directly to the MySQL database. You should rarely need to touch the source code.
+
+The `prisma/migrations/` folder is the source of truth for the database schema — never edit the DB directly. Use migrations:
+```bash
+npx prisma migrate dev --name your_change_description
+```
 
 ---
 
@@ -132,13 +140,14 @@ After launch, **all routine content updates happen in the admin panel** at `/adm
 
 | Item | Where it lives | How to rotate |
 |---|---|---|
-| Admin email | `/opt/just-soft-solution/.env` on VPS, key `ADMIN_EMAIL` | edit env file, `docker compose restart` |
-| Admin password | `/opt/just-soft-solution/.env`, key `ADMIN_PASSWORD` | same |
-| Session secret | `/opt/just-soft-solution/.env`, key `ADMIN_SESSION_SECRET` | rotating logs everyone out |
+| Admin email | `.env` file (or cPanel env vars), key `ADMIN_EMAIL` | edit, restart app |
+| Admin password | `.env`, key `ADMIN_PASSWORD` | same |
+| Session secret | `.env`, key `ADMIN_SESSION_SECRET` | rotating logs everyone out |
+| Database URL | `.env`, key `DATABASE_URL` (format: `mysql://USER:PASS@HOST:PORT/DB`) | rotate DB password via cPanel/MySQL, update DATABASE_URL, restart app |
 | GitHub repo access | GitHub.com → Settings → Collaborators | transfer ownership or invite |
-| VPS root | SSH to your VPS | use `passwd` or change SSH key |
+| Server SSH | SSH to your VPS/cPanel | use `passwd` or change SSH key |
 | Domain DNS | your registrar (Namecheap, Cloudflare, etc.) | client login |
-| TLS cert | auto-managed by certbot on your VPS | `certbot renew` |
+| TLS cert | auto-managed by certbot (VPS) or AutoSSL (cPanel) | follow host docs |
 | Social accounts | LinkedIn, Facebook, YouTube | their respective password reset flows |
 
 **Rotation policy on day one:** rotate `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` immediately after taking over. The values you receive at handover should be considered compromised the moment the handover is complete.

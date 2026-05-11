@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ServiceCard } from "@/components/site/service-card";
 import { ProductCard } from "@/components/site/product-card";
-import { getAllServices, getAllProducts } from "@/lib/store";
+import { safeGetAllServices, safeGetAllProducts } from "@/lib/store";
 import { SITE, whatsappLink } from "@/lib/utils";
 
 export const revalidate = 60;
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const [services, products] = await Promise.all([getAllServices(), getAllProducts()]);
+  const [services, products] = await Promise.all([safeGetAllServices(), safeGetAllProducts()]);
   return (
     <>
       <Section className="pt-10 md:pt-16">

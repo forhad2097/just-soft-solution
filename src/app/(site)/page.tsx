@@ -18,13 +18,13 @@ import { Button } from "@/components/ui/button";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { ServiceCard } from "@/components/site/service-card";
 import { ProductCard } from "@/components/site/product-card";
-import { getAllServices, getAllProducts } from "@/lib/store";
+import { safeGetAllServices, safeGetAllProducts } from "@/lib/store";
 import { whatsappLink } from "@/lib/utils";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [allServices, allProducts] = await Promise.all([getAllServices(), getAllProducts()]);
+  const [allServices, allProducts] = await Promise.all([safeGetAllServices(), safeGetAllProducts()]);
   const featuredServices = allServices.filter((s) => s.status === "published").slice(0, 6);
   const featuredProducts = allProducts.filter((p) => p.status === "published").slice(0, 6);
 

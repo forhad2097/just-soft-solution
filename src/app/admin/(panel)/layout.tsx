@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 
+// Admin pages are auth-gated and read live data on every request — never prerender.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Admin Dashboard",
   robots: { index: false, follow: false },

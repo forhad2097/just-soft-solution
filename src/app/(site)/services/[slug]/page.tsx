@@ -21,8 +21,15 @@ export const revalidate = 60;
 type RouteParams = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
-  const services = await getAllServices();
-  return services.map((s) => ({ slug: s.slug }));
+  // If the DB is unreachable at build time (e.g. building inside CI before
+  // migrations run), fall back to no pre-rendered paths — pages render on
+  // first request instead.
+  try {
+    const services = await getAllServices();
+    return services.map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({

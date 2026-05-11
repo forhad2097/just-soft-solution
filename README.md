@@ -8,8 +8,9 @@ Corporate website + admin panel for **Just Soft Solution** — a software compan
 |---|---|
 | **Anyone receiving the project** | [HANDOVER.md](./HANDOVER.md) — what you're getting, what's next, sign-off |
 | **Day-to-day content editing** | [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) — using the admin panel |
-| **Standing up your own deployment** | [DEPLOYMENT.md](./DEPLOYMENT.md) — Vercel or self-hosted Docker |
-| **Moving the live site to your VPS** | [MIGRATION.md](./MIGRATION.md) — zero-downtime cutover |
+| **Deploying on cPanel** ⭐ | [CPANEL_DEPLOYMENT.md](./CPANEL_DEPLOYMENT.md) — shared hosting step-by-step |
+| **Deploying on Vercel or VPS** | [DEPLOYMENT.md](./DEPLOYMENT.md) — alternative paths |
+| **Migrating between hosts** | [MIGRATION.md](./MIGRATION.md) — zero-downtime cutover |
 | **Operations / when something breaks** | [RUNBOOK.md](./RUNBOOK.md) — incidents, backups, hardening |
 | **Original delivery team's cleanup** | [POST_HANDOVER_CLEANUP.md](./POST_HANDOVER_CLEANUP.md) — tear-down checklist |
 
@@ -35,28 +36,37 @@ Corporate website + admin panel for **Just Soft Solution** — a software compan
 | UI | React 19 + Tailwind CSS v4 |
 | Animation | Framer Motion |
 | Auth | HMAC-signed cookie (Node `crypto`, no third party) |
-| Storage | File-based JSON (`data/store.json`) — no DB required |
+| Database | MySQL 8.0 (or 5.7+) via Prisma ORM |
 | Markdown | `marked` |
-| Container | Node 22 Alpine, multi-stage build |
+| Container | Node 22 Alpine, multi-stage build (optional) |
 
-No database. No serverless functions. No cloud lock-in.
+Runs on cPanel shared hosting, VPS, or serverless. Database is portable — same SQL dump works on any MySQL.
 
 ---
 
 ## Local development
 
 ```bash
+# 1. Install
 npm install
-npm run dev                  # http://localhost:3000
+
+# 2. Configure env
+cp .env.example .env       # then edit DATABASE_URL + admin creds
+
+# 3. Start MySQL + run migrations + seed (all in one)
+docker compose up -d jss-db                      # spin up MySQL
+npx prisma migrate deploy                         # apply schema
+npm run db:seed                                   # populate with seed data
+
+# 4. Run the app
+npm run dev                                       # http://localhost:3000
 ```
 
-The admin uses default credentials in dev (`admin@justsoftsolution.com` / `admin123`) unless you override via env vars. **Never use these defaults in production.**
+Admin credentials default to `admin@justsoftsolution.com` / `admin123` if the env vars aren't set — **never use these defaults in production.**
 
+For a fully containerized dev environment (app + DB):
 ```bash
-# Override locally if you want to match production
-echo 'ADMIN_EMAIL=...' >> .env.local
-echo 'ADMIN_PASSWORD=...' >> .env.local
-echo 'ADMIN_SESSION_SECRET=...' >> .env.local
+docker compose up -d --build
 ```
 
 ---

@@ -1,26 +1,50 @@
 services:
+  jss-db:
+    image: mysql:8
+    container_name: jss-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-jss}"
+      MYSQL_USER: "${MYSQL_USER:-jss}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    command:
+      - --default-authentication-plugin=caching_sha2_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - jss-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   jss-app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: jss-app
     restart: unless-stopped
+    depends_on:
+      jss-db:
+        condition: service_healthy
     ports:
       - "127.0.0.1:3030:3000"
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
+      DATABASE_URL: "mysql://${MYSQL_USER:-jss}:${MYSQL_PASSWORD}@jss-db:3306/${MYSQL_DATABASE:-jss}"
       ADMIN_EMAIL: "${ADMIN_EMAIL}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
       ADMIN_SESSION_SECRET: "${ADMIN_SESSION_SECRET}"
-    volumes:
-      - jss-data:/app/data
     healthcheck:
       test: ["CMD", "wget", "-qO-", "--tries=1", "http://localhost:3000/"]
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 30s
+      start_period: 60s
 
 volumes:
-  jss-data:
+  jss-mysql-data:

@@ -1,0 +1,83 @@
+// Prisma schema for Just Soft Solution
+// Backed by MySQL. Nested objects/arrays stored as JSON columns —
+// keeps the schema simple and matches how the data was modeled originally.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  slug            String   @id @db.VarChar(191)
+  title           String   @db.VarChar(255)
+  category        String   @db.VarChar(100)
+  icon            String   @db.VarChar(100)
+  tagline         String   @db.VarChar(500)
+  description     String   @db.Text
+  longDescription String   @db.Text
+  benefits        Json
+  process         Json
+  technologies    Json
+  faqs            Json
+  metaTitle       String?  @db.VarChar(255)
+  metaDescription String?  @db.VarChar(500)
+  status          String   @default("published") @db.VarChar(20)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@map("services")
+}
+
+model Product {
+  slug            String   @id @db.VarChar(191)
+  title           String   @db.VarChar(255)
+  category        String   @db.VarChar(100)
+  icon            String   @db.VarChar(100)
+  tagline         String   @db.VarChar(500)
+  description     String   @db.Text
+  longDescription String   @db.Text
+  features        Json
+  modules         Json
+  benefits        Json
+  technologies    Json
+  pricing         Json?
+  faqs            Json
+  metaTitle       String?  @db.VarChar(255)
+  metaDescription String?  @db.VarChar(500)
+  status          String   @default("published") @db.VarChar(20)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@map("products")
+}
+
+model BlogPost {
+  slug            String   @id @db.VarChar(191)
+  title           String   @db.VarChar(255)
+  excerpt         String   @db.Text
+  content         String   @db.LongText
+  category        String   @db.VarChar(100)
+  tags            Json
+  author          String   @db.VarChar(100)
+  coverColor      String   @db.VarChar(100)
+  publishedAt     DateTime
+  readingMinutes  Int      @default(1)
+  metaTitle       String?  @db.VarChar(255)
+  metaDescription String?  @db.VarChar(500)
+  status          String   @default("draft") @db.VarChar(20)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([publishedAt])
+  @@map("blog_posts")
+}

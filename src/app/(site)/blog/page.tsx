@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { BlogGrid } from "@/components/site/blog-grid";
-import { getAllPosts } from "@/lib/store";
+import { safeGetAllPosts } from "@/lib/store";
 
 export const revalidate = 60;
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const all = await getAllPosts();
+  const all = await safeGetAllPosts();
   const published = all.filter((p) => p.status === "published");
   const categories = ["All", ...Array.from(new Set(published.map((p) => p.category)))];
 

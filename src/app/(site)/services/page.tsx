@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import { Section, SectionHeader } from "@/components/ui/section";
 import { FilterableGrid } from "@/components/site/filterable-grid";
-import { getAllServices } from "@/lib/store";
+import { safeGetAllServices } from "@/lib/store";
 
 export const revalidate = 60;
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
-  const all = await getAllServices();
+  const all = await safeGetAllServices();
   const published = all.filter((s) => s.status === "published");
   const categories = ["All", ...Array.from(new Set(published.map((s) => s.category)))];
 
