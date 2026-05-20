@@ -84,7 +84,8 @@ NEXT_TELEMETRY_DISABLED   1
 
 ```
 just-soft-solution/
-├── .next/standalone/server.js    ← cPanel "Application startup file"
+├── app.js                        ← cPanel "Application startup file"
+├── .next/standalone/server.js    ← the real server (app.js wraps this)
 ├── src/                          ← source code
 ├── prisma/
 │   ├── schema.prisma             ← database schema
@@ -108,7 +109,7 @@ just-soft-solution/
 4. **Setup Node.js App** → create application:
    - Node.js version: **22.x** (or latest available 18+)
    - Application root: `just-soft-solution`
-   - Application startup file: `.next/standalone/server.js`
+   - Application startup file: `app.js`
 5. Add the 6 **environment variables** (above)
 6. Setup Node.js App → **Run NPM Install**
 7. Setup Node.js App → **Run JS Script → "build"**

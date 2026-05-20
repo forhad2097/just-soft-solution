@@ -94,7 +94,7 @@ You should now have `~/just-soft-solution/` with `package.json`, `src/`, `prisma
    Application mode:       Production
    Application root:       just-soft-solution
    Application URL:        yourdomain.com  (or subdomain like jss.yourdomain.com)
-   Application startup:    .next/standalone/server.js
+   Application startup:    app.js
    Passenger log file:     (leave default)
    ```
 4. Click **Create**
