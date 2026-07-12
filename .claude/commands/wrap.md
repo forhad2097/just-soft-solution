@@ -11,7 +11,7 @@ The user has finished a unit of work — could be one feature, could be a full d
 ## Arguments
 
 `$ARGUMENTS` may include:
-- `deploy` — push to VPS at the end (https://jss.aiosolibe.cloud)
+- `deploy` — push to VPS at the end (https://justsoftsolution.com)
 - `no-deploy` — explicitly skip deploy even if there are user-facing changes
 - `message="..."` — override the commit message
 
@@ -69,8 +69,8 @@ ssh root@100.101.115.46 'cd /opt/just-soft-solution && docker compose up -d --bu
 # smoke test
 sleep 3
 ssh root@100.101.115.46 'docker ps --filter name=jss-app --format "{{.Status}}"'
-curl -s -o /dev/null -w "Live: %{http_code}\n" https://jss.aiosolibe.cloud/
-curl -s -o /dev/null -w "Admin: %{http_code}\n" -L https://jss.aiosolibe.cloud/admin/login
+curl -s -o /dev/null -w "Live: %{http_code}\n" https://justsoftsolution.com/
+curl -s -o /dev/null -w "Admin: %{http_code}\n" -L https://justsoftsolution.com/admin/login
 ```
 
 If `no-deploy` was passed or user declined: skip and note "Deployed: skipped" in the report.

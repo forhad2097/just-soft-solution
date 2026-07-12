@@ -30,6 +30,8 @@ tar --exclude='./node_modules' --exclude='./.next' --exclude='./.git' \
 ssh root@100.101.115.46 'cd /opt/just-soft-solution && docker compose up -d --build 2>&1 | tail -10'
 ```
 
+Migrations (`prisma migrate deploy`) run automatically in the entrypoint — a failed migration now stops the container (no more silent `|| true`). If `jss-app` won't come up after a deploy, check `docker logs jss-app` for a migration error first.
+
 ## Verify
 
 ```bash
@@ -41,8 +43,8 @@ ssh root@100.101.115.46 'docker ps --filter name=jss-app --format "table {{.Name
 
 # Live HTTP smoke test
 for path in "/" "/services" "/products" "/contact" "/admin/login"; do
-  code=$(curl -s -o /dev/null -w "%{http_code}" "https://jss.aiosolibe.cloud$path")
-  echo "$code  https://jss.aiosolibe.cloud$path"
+  code=$(curl -s -o /dev/null -w "%{http_code}" "https://justsoftsolution.com$path")
+  echo "$code  https://justsoftsolution.com$path"
 done
 
 # Check last 20 log lines for runtime errors
@@ -60,7 +62,7 @@ ssh root@100.101.115.46 'docker logs --tail 20 jss-app 2>&1 | tail -20'
 ✅ Live: HTTP 200 on Home, Services, Products, Contact, Admin Login
 [!] Logs: <"clean" or N error lines>
 
-Live: https://jss.aiosolibe.cloud
+Live: https://justsoftsolution.com
 ```
 
 If anything fails along the way — surface the exact error verbatim, do not auto-fix without asking.

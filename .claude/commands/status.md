@@ -1,5 +1,5 @@
 ---
-description: Production health check — container, nginx, TLS, app routes, and recent logs for jss.aiosolibe.cloud.
+description: Production health check — container, nginx, TLS, app routes, and recent logs for justsoftsolution.com.
 allowed-tools: Bash, Read
 ---
 
@@ -32,7 +32,7 @@ ssh root@100.101.115.46 'docker inspect jss-app --format "Started: {{.State.Star
 
 ```bash
 ssh root@100.101.115.46 'nginx -t 2>&1 | tail -2'
-ssh root@100.101.115.46 'echo | openssl s_client -servername jss.aiosolibe.cloud -connect jss.aiosolibe.cloud:443 2>/dev/null | openssl x509 -noout -dates'
+ssh root@100.101.115.46 'echo | openssl s_client -servername justsoftsolution.com -connect justsoftsolution.com:443 2>/dev/null | openssl x509 -noout -dates'
 ```
 
 Note: cert dates (alert if `notAfter` is within 14 days).
@@ -41,7 +41,7 @@ Note: cert dates (alert if `notAfter` is within 14 days).
 
 ```bash
 for path in "/" "/about" "/services" "/products" "/contact" "/admin/login" "/manifest.webmanifest" "/sitemap.xml" "/robots.txt"; do
-  code=$(curl -s -o /dev/null -w "%{http_code}  %{time_total}s" "https://jss.aiosolibe.cloud$path")
+  code=$(curl -s -o /dev/null -w "%{http_code}  %{time_total}s" "https://justsoftsolution.com$path")
   echo "$code  $path"
 done
 ```
@@ -59,7 +59,7 @@ ssh root@100.101.115.46 'docker logs --tail 50 jss-app 2>&1 | grep -iE "error|wa
 ```
 ## /status — <green | yellow | red>
 
-🌐 Live: https://jss.aiosolibe.cloud
+🌐 Live: https://justsoftsolution.com
 📦 Container: jss-app  Up <duration> (<healthy|starting|unhealthy>)  Restarts: <n>
 💻 Resources: CPU <x%>  Mem <used/limit>
 🔒 TLS: valid until <date>  (<n days> remaining)
