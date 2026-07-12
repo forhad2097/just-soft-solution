@@ -1,6 +1,6 @@
 services:
   jss-db:
-    image: mysql:8
+    image: mysql:8.0
     container_name: jss-db
     restart: unless-stopped
     environment:
@@ -40,7 +40,7 @@ services:
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
       ADMIN_SESSION_SECRET: "${ADMIN_SESSION_SECRET}"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "--tries=1", "http://localhost:3000/"]
+      test: ["CMD", "wget", "-qO-", "--tries=1", "http://127.0.0.1:3000/"]
       interval: 30s
       timeout: 5s
       retries: 3
