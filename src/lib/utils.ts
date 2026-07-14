@@ -11,7 +11,7 @@ export const SITE = {
   tagline: "We Turn Any Business Into Business Automation",
   description:
     "Just Soft Solution — custom software development, world-class manual & automation testing, API & security testing, and big data analysis. Operating across Bangladesh, UAE & USA.",
-  url: "https://jss.aiosolibe.cloud",
+  url: "https://justsoftsolution.com",
   whatsappNumber: "8801842022052",
   whatsappDisplay: "+880 1842-022052",
   email: "info@justsoftsolution.com",
@@ -36,7 +36,7 @@ export const SITE = {
       country: "United States",
       code: "us",
       flag: "🇺🇸",
-      address: "235 East 34 St, New York, NY 10016",
+      address: "312 W 2nd St, Casper, WY 82601",
       phone: "+1 (718) 313-7002",
       phoneRaw: "+17183137002",
     },

@@ -133,7 +133,13 @@ export async function Footer() {
           <div>
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </div>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <Link href="/terms-and-conditions" className="hover:text-[var(--primary)] transition">
+              Terms &amp; Conditions
+            </Link>
+            <Link href="/refund-policy" className="hover:text-[var(--primary)] transition">
+              Refund Policy
+            </Link>
             <a
               href={`mailto:${SITE.email}`}
               className="inline-flex items-center gap-1 hover:text-[var(--primary)]"
